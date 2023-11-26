@@ -49,6 +49,7 @@ class SnakeGame extends SurfaceView implements Runnable{
     // And an apple
     private Apple mApple;
 
+    private int mLife = 0;
 
     // This is the constructor method that gets called
     // from com.example.c17snake.SnakeActivity
@@ -188,7 +189,6 @@ class SnakeGame extends SurfaceView implements Runnable{
         if (mSnake.detectDeath()) {
             // Pause the game ready to start again
             mSP.play(mCrashID, 1, 1, 0, 0, 1);
-
             mPaused =true;
         }
 
@@ -208,8 +208,11 @@ class SnakeGame extends SurfaceView implements Runnable{
             mPaint.setColor(Color.argb(255, 255, 255, 255));
             mPaint.setTextSize(120);
 
+
             // Draw the score
-            mCanvas.drawText("" + mScore, 20, 120, mPaint);
+            mLife = mSnake.getLifeTotal();
+            mCanvas.drawText("Score: " + mScore, 20, 120, mPaint);
+            mCanvas.drawText("Lives: " + mLife, 620, 120, mPaint);
 
             // Draw the apple and the snake
             mApple.draw(mCanvas, mPaint);

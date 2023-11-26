@@ -13,6 +13,9 @@ import java.util.ArrayList;
 
 class Snake extends GameObject implements Movable{
 
+    // FEATURE: Life System
+    private int lifeTotal=3;
+
     // The location in the grid of all the segments
     private ArrayList<Point> segmentLocations;
 
@@ -43,6 +46,13 @@ class Snake extends GameObject implements Movable{
     // A bitmap for the body
     private Bitmap mBitmapBody;
 
+    public int getLifeTotal() {
+        return lifeTotal;
+    }
+
+    public void setLifeTotal(int lifeTotal) {
+        this.lifeTotal = lifeTotal;
+    }
 
     Snake(Context context, Point range, int size) {
         super(context,range,size);
@@ -174,19 +184,20 @@ class Snake extends GameObject implements Movable{
                 segmentLocations.get(0).x > mMoveRange.x ||
                 segmentLocations.get(0).y == -1 ||
                 segmentLocations.get(0).y > mMoveRange.y) {
-
-            dead = true;
+            //dead = true;
+            setLifeTotal(lifeTotal--);
         }
-
         // Eaten itself?
         for (int i = segmentLocations.size() - 1; i > 0; i--) {
             // Have any of the sections collided with the head
             if (segmentLocations.get(0).x == segmentLocations.get(i).x &&
                     segmentLocations.get(0).y == segmentLocations.get(i).y) {
-
-                dead = true;
+                //dead = true;
+                setLifeTotal(lifeTotal--);
             }
         }
+        if (lifeTotal==0)
+            dead=true;
         return dead;
     }
 
