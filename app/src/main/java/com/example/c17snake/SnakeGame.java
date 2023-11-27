@@ -201,10 +201,12 @@ class SnakeGame extends SurfaceView implements Runnable{
         // Did the snake die?
         if (mSnake.detectCollision()) {
             mSP.play(mCrashID, 1, 1, 0, 0, 1);
+            mPaused = true;
             mNewLife = true;
             if (mSnake.getLifeTotal()==0) {
                 mSP.play(mCrashID, 1, 1, 0, 0, 1);
                 mPaused = true;
+                mSnake.setLifeTotal(3);
             }
         }
 
