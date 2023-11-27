@@ -204,7 +204,6 @@ class SnakeGame extends SurfaceView implements Runnable{
         if (mSnake.detectCollision()) {
             mSP.play(mCrashID, 1, 1, 0, 0, 1);
             mNewLife = true;
-            mLife--;
             pause();
             if (mLife==0) {
                 mSP.play(mCrashID, 1, 1, 0, 0, 1);
@@ -251,7 +250,7 @@ class SnakeGame extends SurfaceView implements Runnable{
                         200, 700, mPaint);
             }
             if(mNewLife){
-
+                mLife--;
                 // Set the size and color of the mPaint for the text
                 mPaint.setColor(Color.argb(255, 255, 255, 255));
                 mPaint.setTextSize(100);
