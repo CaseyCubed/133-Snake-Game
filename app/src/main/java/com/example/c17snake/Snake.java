@@ -14,7 +14,6 @@ import java.util.ArrayList;
 class Snake extends GameObject implements Movable{
 
     // FEATURE: Life System
-    private int lifeTotal=3;
 
     // The location in the grid of all the segments
     private ArrayList<Point> segmentLocations;
@@ -46,13 +45,6 @@ class Snake extends GameObject implements Movable{
     // A bitmap for the body
     private Bitmap mBitmapBody;
 
-    public int getLifeTotal() {
-        return lifeTotal;
-    }
-
-    public void setLifeTotal(int lifeTotal) {
-        this.lifeTotal = lifeTotal;
-    }
 
     Snake(Context context, Point range, int size) {
         super(context,range,size);
@@ -136,17 +128,6 @@ class Snake extends GameObject implements Movable{
         // Start with a single snake segment
         segmentLocations.add(new Point(w / 2, h / 2));
     }
-
-    void softReset(int w, int h){
-        // Reset the heading
-        heading = Heading.RIGHT;
-        // Delete the old contents of the ArrayList
-        segmentLocations.clear();
-        // Start with a single snake segment
-        segmentLocations.add(new Point(w / 2, h / 2));
-    }
-
-
     public void move() {
         // Move the body
         // Start at the back and move it
@@ -194,7 +175,7 @@ class Snake extends GameObject implements Movable{
                 segmentLocations.get(0).y == -1 ||
                 segmentLocations.get(0).y > mMoveRange.y) {
             collide = true;
-            lifeTotal--;
+            //lifeTotal--;
         }
         // Snake ate itself?
         for (int i = segmentLocations.size() - 1; i > 0; i--) {
@@ -202,18 +183,11 @@ class Snake extends GameObject implements Movable{
             if (segmentLocations.get(0).x == segmentLocations.get(i).x &&
                     segmentLocations.get(0).y == segmentLocations.get(i).y) {
                 collide = true;
-                lifeTotal--;
+                //lifeTotal--;
             }
         }
         return collide;
     }
-
-    /*boolean detectLife(int numOfLives){
-        boolean startAgain = false;
-        if (numOfLives == getLifeTotal());
-            startAgain = true;
-        return startAgain;
-    }*/
 
 
     boolean checkDinner(Point l) {

@@ -28,6 +28,7 @@ class SnakeGame extends SurfaceView implements Runnable{
     private volatile boolean mPaused = true;
 
     private volatile boolean mNewLife = false;
+    private int mLife = 3;
 
     // for playing sound effects
     private SoundPool mSP;
@@ -51,7 +52,7 @@ class SnakeGame extends SurfaceView implements Runnable{
     // And an apple
     private Apple mApple;
 
-    private int mLife = 0;
+
 
     // This is the constructor method that gets called
     // from com.example.c17snake.SnakeActivity
@@ -128,13 +129,14 @@ class SnakeGame extends SurfaceView implements Runnable{
     public void newLife(){
 
         // reset the snake
-        mSnake.softReset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
+        mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
 
         // Get the apple ready for dinner
         mApple.spawn();
 
         // Setup mNextFrameTime so an update can triggered
         mNextFrameTime = System.currentTimeMillis();
+        resume();
     }
 
 
@@ -201,14 +203,16 @@ class SnakeGame extends SurfaceView implements Runnable{
         // Did the snake die?
         if (mSnake.detectCollision()) {
             mSP.play(mCrashID, 1, 1, 0, 0, 1);
-            mPaused = true;
             mNewLife = true;
-            if (mSnake.getLifeTotal()==0) {
+            mLife--;
+            pause();
+            if (mLife==0) {
                 mSP.play(mCrashID, 1, 1, 0, 0, 1);
                 mPaused = true;
-                mSnake.setLifeTotal(3);
             }
         }
+
+
 
     }
 
@@ -228,7 +232,6 @@ class SnakeGame extends SurfaceView implements Runnable{
 
 
             // Draw the score
-            mLife = mSnake.getLifeTotal();
             mCanvas.drawText("Score: " + mScore, 20, 120, mPaint);
             mCanvas.drawText("Lives: " + mLife, 620, 120, mPaint);
 
@@ -249,6 +252,18 @@ class SnakeGame extends SurfaceView implements Runnable{
                 mCanvas.drawText("Tap to Play",
                         200, 700, mPaint);
             }
+            if(mNewLife){
+
+                // Set the size and color of the mPaint for the text
+                mPaint.setColor(Color.argb(255, 255, 255, 255));
+                mPaint.setTextSize(100);
+
+                // Draw the message
+                // We will give this an international upgrade soon
+                //mCanvas.drawText("Tap To Play!", 200, 700, mPaint);
+                mCanvas.drawText("You've collided! Tap again to use new life",
+                        100, 300, mPaint);
+            }
 
 
             // Unlock the mCanvas and reveal the graphics for this frame
@@ -261,6 +276,7 @@ class SnakeGame extends SurfaceView implements Runnable{
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_UP:
                 if (mPaused) {
+                    mLife = 3;
                     mPaused = false;
                     newGame();
 
@@ -269,8 +285,8 @@ class SnakeGame extends SurfaceView implements Runnable{
                 }
                 if (mNewLife){
                     mNewLife = false;
+                    mPaused = false;
                     newLife();
-                    return true;
                 }
 
                 // Let the com.example.c17snake.Snake class handle the input
