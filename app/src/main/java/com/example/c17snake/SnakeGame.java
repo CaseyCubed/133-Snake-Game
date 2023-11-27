@@ -212,8 +212,6 @@ class SnakeGame extends SurfaceView implements Runnable{
             }
         }
 
-
-
     }
 
 
