@@ -51,7 +51,7 @@ class Snake extends GameObject implements Movable{
     }
 
     public void setLifeTotal(int lifeTotal) {
-        this.lifeTotal = lifeTotal;
+        lifeTotal = this.lifeTotal;
     }
 
     Snake(Context context, Point range, int size) {
@@ -137,6 +137,13 @@ class Snake extends GameObject implements Movable{
         segmentLocations.add(new Point(w / 2, h / 2));
     }
 
+    void softReset(int w, int h){
+        // Reset the heading
+        heading = Heading.RIGHT;
+
+        segmentLocations.add(new Point(w / 2, h / 2));
+    }
+
 
     public void move() {
         // Move the body
@@ -175,31 +182,37 @@ class Snake extends GameObject implements Movable{
 
     }
 
-    boolean detectDeath() {
-        // Has the snake died?
-        boolean dead = false;
+    boolean detectCollision() {
+        // Has the snake collided?
+        boolean collide = false;
 
-        // Hit any of the screen edges
+        // Snake crashed at any of the screen edges
         if (segmentLocations.get(0).x == -1 ||
                 segmentLocations.get(0).x > mMoveRange.x ||
                 segmentLocations.get(0).y == -1 ||
                 segmentLocations.get(0).y > mMoveRange.y) {
-            //dead = true;
+            collide = true;
             setLifeTotal(lifeTotal--);
         }
-        // Eaten itself?
+        // Snake ate itself?
         for (int i = segmentLocations.size() - 1; i > 0; i--) {
             // Have any of the sections collided with the head
             if (segmentLocations.get(0).x == segmentLocations.get(i).x &&
                     segmentLocations.get(0).y == segmentLocations.get(i).y) {
-                //dead = true;
+                collide = true;
                 setLifeTotal(lifeTotal--);
             }
         }
-        if (lifeTotal==0)
-            dead=true;
-        return dead;
+        return collide;
     }
+
+    /*boolean detectLife(int numOfLives){
+        boolean startAgain = false;
+        if (numOfLives == getLifeTotal());
+            startAgain = true;
+        return startAgain;
+    }*/
+
 
     boolean checkDinner(Point l) {
         //if (snakeXs[0] == l.x && snakeYs[0] == l.y) {

@@ -27,6 +27,8 @@ class SnakeGame extends SurfaceView implements Runnable{
     private volatile boolean mPlaying = false;
     private volatile boolean mPaused = true;
 
+    private volatile boolean mNewLife = false;
+
     // for playing sound effects
     private SoundPool mSP;
     private int mEat_ID = -1;
@@ -123,6 +125,17 @@ class SnakeGame extends SurfaceView implements Runnable{
         // Setup mNextFrameTime so an update can triggered
         mNextFrameTime = System.currentTimeMillis();
     }
+    public void newLife(){
+
+        // reset the snake
+        mSnake.softReset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
+
+        // Get the apple ready for dinner
+        mApple.spawn();
+
+        // Setup mNextFrameTime so an update can triggered
+        mNextFrameTime = System.currentTimeMillis();
+    }
 
 
     // Handles the game loop
@@ -186,10 +199,13 @@ class SnakeGame extends SurfaceView implements Runnable{
         }
 
         // Did the snake die?
-        if (mSnake.detectDeath()) {
-            // Pause the game ready to start again
+        if (mSnake.detectCollision()) {
             mSP.play(mCrashID, 1, 1, 0, 0, 1);
-            mPaused =true;
+            mNewLife = true;
+            if (mSnake.getLifeTotal()==0) {
+                mSP.play(mCrashID, 1, 1, 0, 0, 1);
+                mPaused = true;
+            }
         }
 
     }
@@ -247,6 +263,11 @@ class SnakeGame extends SurfaceView implements Runnable{
                     newGame();
 
                     // Don't want to process snake direction for this tap
+                    return true;
+                }
+                if (mNewLife){
+                    mNewLife = false;
+                    newLife();
                     return true;
                 }
 
