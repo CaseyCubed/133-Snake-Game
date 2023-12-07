@@ -55,6 +55,10 @@ class SnakeGame extends SurfaceView implements Runnable{
     private Bitmap pauseBitmap;
     private Bitmap playBitmap;
 
+    private Bitmap mBackgroundBitmap;
+
+    private int mCurrentLevel = 1; // Default level
+
 
 
 
@@ -66,6 +70,9 @@ class SnakeGame extends SurfaceView implements Runnable{
         // Initialize GameState
         mGameState = new GameState();
         mGameInfo = new GameInfo();
+
+        //add background images
+        mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.grass3);
 
         // Add dimensions for pause button and load the image
         pauseButton = new PauseButton(2050, 50, 100, 100);
@@ -260,6 +267,12 @@ class SnakeGame extends SurfaceView implements Runnable{
 
         // Setup mNextFrameTime so an update can triggered
         mNextFrameTime = System.currentTimeMillis();
+
+
+        // Set the initial background based on the current level
+
+        int backgroundResourceId = getBackgroundResourceForLevel(mGameInfo.getScore());
+        mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), backgroundResourceId);
     }
     public void newLife(){
 
@@ -375,8 +388,27 @@ class SnakeGame extends SurfaceView implements Runnable{
         if (mSurfaceHolder.getSurface().isValid()) {
             mCanvas = mSurfaceHolder.lockCanvas();
 
-            // Fill the screen with a color
-            mCanvas.drawColor(Color.argb(255, 26, 128, 182));
+
+
+            //Fill screen with background grass image
+
+            mCanvas.drawBitmap(mBackgroundBitmap, 0, 0, null);
+
+
+            int backgroundResourceId = getBackgroundResourceForLevel(mGameInfo.getScore());
+            Bitmap backgroundBitmap = BitmapFactory.decodeResource(getResources(), backgroundResourceId);
+
+            // Draw the background
+            mCanvas.drawBitmap(backgroundBitmap, 0, 0, null);
+
+
+
+
+
+
+
+
+
 
             // Set the size and color of the mPaint for the text
             mPaint.setColor(Color.argb(255, 255, 255, 255));
@@ -530,4 +562,23 @@ class SnakeGame extends SurfaceView implements Runnable{
         mThread = new Thread(this);
         mThread.start();
     }
+
+
+
+
+    // This method is called when the player completes a level
+
+
+    private int getBackgroundResourceForLevel(int score ) {
+        if (score >= 1 && score <= 3) {
+            return R.drawable.grass3;
+        } else if (score >= 4 && score <= 7) {
+            return R.drawable.cloudy1;
+        } else if (score >= 8 && score <= 10) {
+            return R.drawable.starry1;
+        } else {
+            return R.drawable.cloudy1;
+        }
+    }
+
 }
