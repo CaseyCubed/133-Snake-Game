@@ -130,7 +130,6 @@ class SnakeGame extends SurfaceView implements Runnable{
     public class GameInfo {
         private int lives; // number of lives
         private int score; // number of points
-        private static final String HIGH_SCORE_FILE = "high_scores.txt";
         private List<Integer> highScores;
         private Context context;
         private boolean newHighScore = false;
@@ -232,7 +231,7 @@ class SnakeGame extends SurfaceView implements Runnable{
 
         private File getHighScoresFile() {
             // Create a file in the app's internal storage directory
-            return new File(context.getFilesDir(), HIGH_SCORE_FILE);
+            return new File(context.getFilesDir(), "high_scores.txt");
         }
 
 
