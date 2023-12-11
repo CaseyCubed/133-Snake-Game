@@ -493,7 +493,7 @@ class SnakeGame extends SurfaceView implements Runnable{
                 //for (int i = 0; i < mGameInfo.getHighScores().size(); i++) {
                 for (int score : mGameInfo.getHighScores()) {
                     // Write out each score
-                    yOffset += 100;
+                    yOffset += 100; // spacing out each high score
                     mPaint.setColor(Color.argb(255, 255, 255, 255));
                     if ((score == mGameInfo.getScore()) && mGameInfo.isNewHighScore() && !firstMatch) {
                         mPaint.setColor(Color.argb(255, 255, 255, 0));
