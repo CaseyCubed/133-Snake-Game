@@ -182,8 +182,7 @@ class SnakeGame extends SurfaceView implements Runnable{
         }
 
         public void updateHighScores() {
-            //List<Integer> highScores = getHighScores();
-
+            // Loops through each score
             for (int i = 0; i < highScores.size(); i++) {
                 if (score > highScores.get(i)) {
                     highScores.add(i, score);
@@ -491,6 +490,7 @@ class SnakeGame extends SurfaceView implements Runnable{
                 int counter = 1;
                 int yOffset = 450;  // Starting Y position for Top Scores text
                 mCanvas.drawText("Top 3 Scores", 1700, yOffset, mPaint);
+                //for (int i = 0; i < mGameInfo.getHighScores().size(); i++) {
                 for (int score : mGameInfo.getHighScores()) {
                     //Log.d("Thing", "Score: "+mGameInfo.getScore()+" High score: "+score);
                     // Write out each score
