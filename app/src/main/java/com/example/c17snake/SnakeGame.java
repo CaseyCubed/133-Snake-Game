@@ -431,6 +431,7 @@ class SnakeGame extends SurfaceView implements Runnable{
         // Did the snake die?
         if (mSnake.detectCollision()) {
             mSP.play(mBopID, 1, 1, 0, 0, 1);
+            mSP.pause(mTrack);
             mGameInfo.decLives();
 
             if (mGameInfo.getLives()==0) {
@@ -472,15 +473,7 @@ class SnakeGame extends SurfaceView implements Runnable{
 
             // Draw the background
             mCanvas.drawBitmap(backgroundBitmap, 0, 0, null);
-
-
-
-
-
-
-
-
-
+            
 
             // Set the size and color of the mPaint for the text
             mPaint.setColor(Color.argb(255, 255, 255, 255));
@@ -561,7 +554,7 @@ class SnakeGame extends SurfaceView implements Runnable{
                 // For when the game is internally paused/frozen
 
                 // Set the size and color of the mPaint for the text
-                mPaint.setColor(Color.argb(255, 255, 255, 255));
+                mPaint.setColor(Color.argb(255, 255, 155, 55));
                 mPaint.setTextSize(250);
 
                 mCanvas.drawText("Tap to start!", 450, 600, mPaint);
