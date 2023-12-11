@@ -16,6 +16,7 @@ import android.os.Build;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.util.Log;
 
 import java.io.IOException;
 
@@ -35,6 +36,10 @@ class SnakeGame extends SurfaceView implements Runnable{
     private SoundPool mSP;
     private int mEat_ID = -1;
     private int mCrashID = -1;
+    private int mBeepID = -1;
+    private int mBoopID = -1;
+    private int mBopID = -1;
+    private int mTrack = -1;
 
     // The size in segments of the playable area
     private final int NUM_BLOCKS_WIDE = 40;
@@ -85,7 +90,7 @@ class SnakeGame extends SurfaceView implements Runnable{
         mNumBlocksHigh = size.y / blockSize;
 
         // Initialize the SoundPool
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BASE) {
             AudioAttributes audioAttributes = new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_MEDIA)
                     .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -103,14 +108,20 @@ class SnakeGame extends SurfaceView implements Runnable{
             AssetFileDescriptor descriptor;
 
             // Prepare the sounds in memory
-            descriptor = assetManager.openFd("get_apple.ogg");
-            mEat_ID = mSP.load(descriptor, 0);
+            descriptor = assetManager.openFd("beep.ogg");
+            mBeepID = mSP.load(descriptor, 0);
 
-            descriptor = assetManager.openFd("snake_death.ogg");
-            mCrashID = mSP.load(descriptor, 0);
+            descriptor = assetManager.openFd("boop.ogg");
+            mBoopID = mSP.load(descriptor, 0);
+
+            descriptor = assetManager.openFd("bop.ogg");
+            mBopID = mSP.load(descriptor, 0);
+
+            descriptor = assetManager.openFd("soundTrack.ogg");
+            mTrack = mSP.load(descriptor, 0);
 
         } catch (IOException e) {
-            // Error
+            Log.e("error", "failed to load sound files");
         }
 
         // Initialize the drawing objects
@@ -284,7 +295,7 @@ class SnakeGame extends SurfaceView implements Runnable{
 
         // Setup mNextFrameTime so an update can triggered
         mNextFrameTime = System.currentTimeMillis();
-
+        mSP.play(mTrack, 1, 1, 0, 0, 1);
         mGameState.setPaused(false);
     }
 
@@ -299,7 +310,6 @@ class SnakeGame extends SurfaceView implements Runnable{
                     update();
                 }
             }
-
             draw();
         }
     }
@@ -338,8 +348,6 @@ class SnakeGame extends SurfaceView implements Runnable{
 
         mApple.move(getContext(),getWidth());
 
-
-
         // Did the head of the snake eat the apple?
         if(mSnake.checkDinner(mApple.getLocation())){
             // This reminds me of Edge of Tomorrow.
@@ -350,12 +358,12 @@ class SnakeGame extends SurfaceView implements Runnable{
             mGameInfo.incScore();
 
             // Play a sound
-            mSP.play(mEat_ID, 1, 1, 0, 0, 1);
+            mSP.play(mBoopID, 1, 1, 0, 0, 1);
         }
 
         // Did the snake die?
         if (mSnake.detectCollision()) {
-            mSP.play(mCrashID, 1, 1, 0, 0, 1);
+            mSP.play(mBopID, 1, 1, 0, 0, 1);
             mNewLife = true;
             mGameInfo.decLives();
             //mLife = mLife - 1;
@@ -363,7 +371,7 @@ class SnakeGame extends SurfaceView implements Runnable{
 
             if (mGameInfo.getLives()==0) {
                 // Ran out of lives
-                mSP.play(mCrashID, 1, 1, 0, 0, 1);
+                mSP.play(mBopID, 1, 1, 0, 0, 1);
                 mGameState.setPaused(true);
 
                 // Toggle the Game Over screen
@@ -378,7 +386,6 @@ class SnakeGame extends SurfaceView implements Runnable{
 
             // Possible idea for later: show score and highest score at the end
         }
-
     }
 
 
@@ -544,7 +551,6 @@ class SnakeGame extends SurfaceView implements Runnable{
     }
 
 
-
     // Stop the thread
     public void pause() {
         mGameState.setPlaying(false);
@@ -555,16 +561,12 @@ class SnakeGame extends SurfaceView implements Runnable{
         }
     }
 
-
     // Start the thread
     public void resume() {
         mGameState.setPlaying(true);
         mThread = new Thread(this);
         mThread.start();
     }
-
-
-
 
     // This method is called when the player completes a level
 
@@ -580,5 +582,4 @@ class SnakeGame extends SurfaceView implements Runnable{
             return R.drawable.cloudy1;
         }
     }
-
 }
